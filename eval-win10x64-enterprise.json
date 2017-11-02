@@ -67,9 +67,8 @@
       "winrm_username": "{{user `winrm_username`}}"
     },
     {
+      "communicator": "winrm",
       "guest_additions_mode": "disable",
-      "guest_os_type": "{{user `guest_os_type`}}",
-      "hard_drive_interface": "{{user `hard_drive_interface`}}",
       "headless": "{{ user `headless` }}",
       "name": "vagrant-cloud-upload",
       "output_directory": "builds/virtualbox-ovf/vagrant-cloud-upload/{{user `template`}}",
