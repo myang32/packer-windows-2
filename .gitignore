@@ -13,5 +13,6 @@ crash.log
 *.zip
 
 .vagrant/
+/builds/
 output-*
 packer_cache/

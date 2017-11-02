@@ -20,8 +20,10 @@ Vagrant.configure("2") do |config|
 
     config.vm.provider :virtualbox do |v, override|
         #v.gui = true
-        v.customize ["modifyvm", :id, "--memory", 2048]
         v.customize ["modifyvm", :id, "--cpus", 2]
+        v.customize ["modifyvm", :id, "--cableconnected1", "on"] # ensure that the network cable is connected. See chef/bento#688
+        v.customize ["modifyvm", :id, "--memory", 2048]
+        v.customize ["modifyvm", :id, "--vram", "128"] # 10 MB is the minimum to enable Virtualbox seamless mode
         v.customize ["setextradata", "global", "GUI/MaxGuestResolution", "any"]
         v.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
         v.customize ["setextradata", :id, "CustomVideoMode1", "1024x768x32"]

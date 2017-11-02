@@ -25,33 +25,34 @@
         "floppy/zz-start-transports.cmd"
       ],
       "guest_additions_mode": "attach",
-      "guest_os_type": "Windows10_64",
-      "hard_drive_interface": "sata",
+      "guest_os_type": "{{user `guest_os_type`}}",
+      "hard_drive_interface": "{{user `hard_drive_interface`}}",
       "headless": "{{ user `headless` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
-      "iso_checksum_type": "sha1",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_url": "{{ user `iso_url` }}",
+      "output_directory": "builds/virtualbox-iso/{{user `template`}}",
+      "post_shutdown_delay": "{{ user `post_shutdown_delay` }}",
       "shutdown_command": "{{ user `shutdown_command`}}",
-      "post_shutdown_delay": "30s",
       "type": "virtualbox-iso",
       "vboxmanage": [
         [
           "modifyvm",
           "{{.Name}}",
           "--memory",
-          "2048"
+          "{{ user `memory` }}"
         ],
         [
           "modifyvm",
           "{{.Name}}",
           "--cpus",
-          "2"
+          "{{ user `cpus` }}"
         ],
         [
           "modifyvm",
           "{{.Name}}",
           "--vram",
-          "96"
+          "{{ user `vram` }}"
         ],
         [
           "setextradata",
@@ -60,26 +61,69 @@
           "1"
         ]
       ],
-      "vm_name": "eval-win10x64-enterprise",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "10000s",
-      "winrm_username": "vagrant"
+      "vm_name": "{{ user `vm_name` }}",
+      "winrm_password": "{{user `winrm_password`}}",
+      "winrm_timeout": "{{user `winrm_timeout`}}",
+      "winrm_username": "{{user `winrm_username`}}"
+    },
+    {
+      "guest_additions_mode": "disable",
+      "guest_os_type": "{{user `guest_os_type`}}",
+      "hard_drive_interface": "{{user `hard_drive_interface`}}",
+      "headless": "{{ user `headless` }}",
+      "name": "vagrant-cloud-upload",
+      "output_directory": "builds/virtualbox-ovf/vagrant-cloud-upload/{{user `template`}}",
+      "post_shutdown_delay": "{{ user `post_shutdown_delay` }}",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "source_path": "builds/virtualbox-iso/{{user `template`}}/{{user `vm_name`}}.ovf",
+      "type": "virtualbox-ovf",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{ user `memory` }}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{ user `cpus` }}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "{{ user `vram` }}"
+        ],
+        [
+          "setextradata",
+          "{{.Name}}",
+          "VBoxInternal/CPUM/CMPXCHG16B",
+          "1"
+        ]
+      ],
+      "vm_name": "{{ user `vm_name` }}",
+      "winrm_password": "{{user `winrm_password`}}",
+      "winrm_timeout": "{{user `winrm_timeout`}}",
+      "winrm_username": "{{user `winrm_username`}}"
     }
   ],
   "post-processors": [
+    {
+      "compression_level": 1,
+      "keep_input_artifact": true,
+      "only": ["vagrant-cloud-upload"],
+      "output": "builds/vagrant/{{user `template`}}-{{.Provider}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "vagrantfile-templates/vagrantfile-eval-win10x64-enterprise.tpl"
+    },
     {
       "box_tag": "ferrarimarco/windows",
       "only": ["vagrant-cloud-upload"],
       "type": "vagrant-cloud",
       "version": "{{user `version`}}",
       "version_description": "[ferrarimarco/packer-windows](https://github.com/ferrarimarco/packer-windows)"
-    },
-    {
-      "compression_level": 1,
-      "keep_input_artifact": true,
-      "output": "box/{{.Provider}}/eval-win10x64-enterprise-{{user `version`}}.box",
-      "type": "vagrant",
-      "vagrantfile_template": "vagrantfile-templates/vagrantfile-eval-win10x64-enterprise.tpl"
     }
   ],
   "provisioners": [
@@ -87,6 +131,7 @@
       "environment_vars": [
         "UPDATE={{user `update`}}"
       ],
+      "only": ["virtualbox-iso"],
       "scripts": [
         "script/vagrant.bat",
         "script/vmtool.bat",
@@ -100,12 +145,24 @@
   ],
   "variables": {
     "autounattend": "floppy/eval-win10x64-enterprise/Autounattend.xml",
+    "cpus": "2",
     "disk_size": "40960",
+    "guest_os_type": "Windows10_64",
+    "hard_drive_interface": "sata",
     "headless": "false",
     "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
+    "iso_checksum_type": "sha1",
     "iso_url": "http://care.dlservice.microsoft.com/dl/download/6/5/D/65D18931-F626-4A35-AD5B-F5DA41FE6B76/16299.15.170928-1534.rs3_release_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso",
+    "memory": "2048",
+    "post_shutdown_delay": "30s",
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "template": "eval-win10x64-enterprise",
     "update": "true",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "vm_name": "eval-win10x64-enterprise",
+    "vram": "96",
+    "winrm_password": "vagrant",
+    "winrm_timeout": "10000s",
+    "winrm_username": "vagrant"
   }
 }
