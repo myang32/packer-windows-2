@@ -1,0 +1,111 @@
+{
+  "builders": [
+    {
+      "communicator": "winrm",
+      "disk_size": "{{user `disk_size`}}",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "floppy/_download.cmd",
+        "floppy/_packer_config.cmd",
+        "floppy/_post_update_install.bat",
+        "floppy/00-run-all-scripts.cmd",
+        "floppy/01-install-wget.cmd",
+        "floppy/autologon.bat",
+        "floppy/console.bat",
+        "floppy/disablewinupdate.bat",
+        "floppy/explorer.bat",
+        "floppy/fixnetwork.ps1",
+        "floppy/hibernation.bat",
+        "floppy/install-winrm.cmd",
+        "floppy/oracle-cert.cer",
+        "floppy/pagefile.bat",
+        "floppy/passwordchange.bat",
+        "floppy/powerconfig.bat",
+        "floppy/update.bat",
+        "floppy/zz-start-transports.cmd"
+      ],
+      "guest_additions_mode": "attach",
+      "guest_os_type": "Windows10_64",
+      "hard_drive_interface": "sata",
+      "headless": "{{ user `headless` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{ user `iso_url` }}",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "post_shutdown_delay": "30s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "96"
+        ],
+        [
+          "setextradata",
+          "{{.Name}}",
+          "VBoxInternal/CPUM/CMPXCHG16B",
+          "1"
+        ]
+      ],
+      "vm_name": "eval-win10x64-enterprise",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "10000s",
+      "winrm_username": "vagrant"
+    }
+  ],
+  "post-processors": [
+    {
+      "box_tag": "ferrarimarco/windows",
+      "only": ["vagrant-cloud-upload"],
+      "type": "vagrant-cloud",
+      "version": "{{user `version`}}",
+      "version_description": "[ferrarimarco/packer-windows](https://github.com/ferrarimarco/packer-windows)"
+    },
+    {
+      "compression_level": 1,
+      "keep_input_artifact": true,
+      "output": "box/{{.Provider}}/eval-win10x64-enterprise-{{user `version`}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "vagrantfile-templates/vagrantfile-eval-win10x64-enterprise.tpl"
+    }
+  ],
+  "provisioners": [
+    {
+      "environment_vars": [
+        "UPDATE={{user `update`}}"
+      ],
+      "scripts": [
+        "script/vagrant.bat",
+        "script/vmtool.bat",
+        "script/clean.bat",
+        "script/ultradefrag.bat",
+        "script/uninstall-7zip.bat",
+        "script/sdelete.bat"
+      ],
+      "type": "windows-shell"
+    }
+  ],
+  "variables": {
+    "autounattend": "floppy/eval-win10x64-enterprise/Autounattend.xml",
+    "disk_size": "40960",
+    "headless": "false",
+    "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
+    "iso_url": "http://care.dlservice.microsoft.com/dl/download/6/5/D/65D18931-F626-4A35-AD5B-F5DA41FE6B76/16299.15.170928-1534.rs3_release_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso",
+    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "update": "true",
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,17 @@
+.DS_Store
+.keep_known_hosts
+
+crash.log
+
+*.box
+*.exe
+*.iso
+*.msi
+*.msu
+*.swp
+*.tar.gz
+*.zip
+
+.vagrant/
+output-*
+packer_cache/
