@@ -109,21 +109,23 @@
     }
   ],
   "post-processors": [
-    {
-      "compression_level": 1,
-      "keep_input_artifact": true,
-      "only": ["vagrant-cloud-upload"],
-      "output": "builds/vagrant/{{user `template`}}-{{.Provider}}.box",
-      "type": "vagrant",
-      "vagrantfile_template": "vagrantfile-templates/vagrantfile-eval-win10x64-enterprise.tpl"
-    },
-    {
-      "box_tag": "ferrarimarco/windows",
-      "only": ["vagrant-cloud-upload"],
-      "type": "vagrant-cloud",
-      "version": "{{user `version`}}",
-      "version_description": "[ferrarimarco/packer-windows](https://github.com/ferrarimarco/packer-windows)"
-    }
+    [
+      {
+        "compression_level": 1,
+        "keep_input_artifact": true,
+        "only": ["vagrant-cloud-upload"],
+        "output": "builds/vagrant/{{user `template`}}-{{.Provider}}.box",
+        "type": "vagrant",
+        "vagrantfile_template": "vagrantfile-templates/vagrantfile-eval-win10x64-enterprise.tpl"
+      },
+      {
+        "box_tag": "ferrarimarco/windows",
+        "only": ["vagrant-cloud-upload"],
+        "type": "vagrant-cloud",
+        "version": "{{user `version`}}",
+        "version_description": "[ferrarimarco/packer-windows](https://github.com/ferrarimarco/packer-windows)"
+      }
+    ]
   ],
   "provisioners": [
     {
