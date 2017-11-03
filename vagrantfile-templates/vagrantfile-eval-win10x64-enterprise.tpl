@@ -8,10 +8,6 @@ Vagrant.configure("2") do |config|
     config.vm.box = "ferrarimarco/windows-10-x64-enterprise"
     config.vm.communicator = "winrm"
 
-    # Admin user name and password
-    config.winrm.username = "vagrant"
-    config.winrm.password = "vagrant"
-
     config.vm.guest = :windows
     config.windows.halt_timeout = 15
 
@@ -21,7 +17,6 @@ Vagrant.configure("2") do |config|
     config.vm.provider :virtualbox do |v, override|
         #v.gui = true
         v.customize ["modifyvm", :id, "--cpus", 2]
-        v.customize ["modifyvm", :id, "--cableconnected1", "on"] # ensure that the network cable is connected. See chef/bento#688
         v.customize ["modifyvm", :id, "--memory", 2048]
         v.customize ["modifyvm", :id, "--vram", "128"] # 10 MB is the minimum to enable Virtualbox seamless mode
         v.customize ["setextradata", "global", "GUI/MaxGuestResolution", "any"]
