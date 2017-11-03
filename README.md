@@ -8,7 +8,7 @@ This repository contains Windows templates that can be used to create boxes for 
 
 The following Windows versions are currently supported:
 
- * Windows 10
+ * [Windows 10 Enterprise 64-bit (box id: windows-10-x64-enterprise)](https://app.vagrantup.com/ferrarimarco/boxes/windows-10-x64-enterprise)
 
 ## How to Run
 
@@ -22,7 +22,7 @@ The following Windows versions are currently supported:
 To use the box:
 
 1. Install the dependencies
-1. Run `vagrant init ferrarimarco/windows` to initialize a `Vagrantfile` for this box
+1. Run `vagrant init ferrarimarco/<box-id>` to initialize a `Vagrantfile` for this box
 1. Run `vagrant up`
 
 ### Credentials
