@@ -119,7 +119,7 @@
         "vagrantfile_template": "vagrantfile-templates/vagrantfile-eval-win10x64-enterprise.tpl"
       },
       {
-        "box_tag": "ferrarimarco/windows",
+        "box_tag": "{{user `box_tag`}}",
         "only": ["vagrant-cloud-upload"],
         "type": "vagrant-cloud",
         "version": "{{user `version`}}",
@@ -146,6 +146,7 @@
   ],
   "variables": {
     "autounattend": "floppy/eval-win10x64-enterprise/Autounattend.xml",
+    "box_tag": "ferrarimarco/windows-10-x64-enterprise",
     "cpus": "2",
     "disk_size": "40960",
     "guest_os_type": "Windows10_64",
